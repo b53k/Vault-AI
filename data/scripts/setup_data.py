@@ -147,8 +147,8 @@ class SyntheticDataGenerator:
         self,
         accounts: List[Dict],
         transactions_per_account: tuple = (10, 200),
-        start_date: datetime = None,
-        end_date: datetime = None
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
     ) -> List[Dict]:
         """
         Generate transactions for accounts
