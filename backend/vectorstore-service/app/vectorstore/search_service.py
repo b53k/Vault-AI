@@ -31,7 +31,7 @@ class VectorSearchService:
         threshold = similarity_threshold or self.similarity_threshold
         limit = int(max_results) if max_results is not None else self.max_results
 
-        print(f"DEBUG search: query='{query}', threshold={threshold}, limit={limit}, similarity_threshold param={similarity_threshold}")
+        #print(f"DEBUG search: query='{query}', threshold={threshold}, limit={limit}, similarity_threshold param={similarity_threshold}")
 
         with db_connection.get_connection() as conn:
             with conn.cursor() as cur:
@@ -74,7 +74,7 @@ class VectorSearchService:
       
         results = self.search(query, max_results=max_chunks, similarity_threshold=similarity_threshold)
         
-        print(f"DEBUG get_context_for_rag: found {len(results)} results")
+        #print(f"DEBUG get_context_for_rag: found {len(results)} results")
 
         if not results:
             return "No relevant policy information found."
