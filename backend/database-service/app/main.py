@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api.routes.analytics import router as search_router
+from app.api.routes.analytics import router_spending, router_balance
 
 app = FastAPI(
     title="Database Service",
@@ -7,7 +7,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
-app.include_router(search_router)
+app.include_router(router_spending)
+app.include_router(router_balance)
 
 @app.get("/")
 async def root():
