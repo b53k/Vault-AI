@@ -191,7 +191,6 @@ async def test_sql_analytics_tool():
     print("=" * 50)
     try:
         # First, get accounts to find a valid account_id
-        # For this test, we'll use account_id=1 (adjust if needed)
         test_account_id = 14
         
         results = await tool.analyze_spending(
