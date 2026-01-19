@@ -1,0 +1,8 @@
+{
+    "rag_prompt": "Search bank policy documents, terms of service, and fee schedules.\n\nUse this tool when users ask about:\n- Bank fees (overdraft fees, wire transfer fees, ATM fees, etc.)\n- Terms of service questions\n- Account features, limitations, or policies\n- Fee schedules and charges\n- Account opening/closing procedures\n\nExamples:\n- \"What is the overdraft fee?\"\n- \"How much does an international wire transfer cost?\"\n- \"What are the terms for savings accounts?\"",
+    
+    "spending_prompt": "Analyze user spending patterns and transactions.\n\nUse this tool when users ask about:\n- Spending by category (e.g., \"How much did I spend on coffee?\")\n- Spending by merchant\n- Monthly or time-based spending trends\n- Spending in specific accounts (checking vs savings)\n\nExamples:\n- \"What's my spending this month?\"\n- \"How much did I spend on groceries last month?\"\n- \"Show me my spending by category\"\n- \"What's my spending in my checking account?\"\n\nNote: Requires user_id. If not provided, ask the user.",
+    
+    "balance_prompt": "Get account balance(s) for a user.\n\nUse this tool when users ask about:\n- Current account balance\n- Balance in specific account types (checking, savings)\n- Total balance across all accounts\n- \"How much money do I have?\"\n\nExamples:\n- \"What's my balance?\"\n- \"Show me my checking account balance\"\n- \"How much is in my savings account?\"\n- \"What's my total balance?\"\n\nNote: Requires user_id. If not provided, ask the user."
+  }
+  
