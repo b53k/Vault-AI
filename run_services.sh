@@ -37,6 +37,7 @@ cleanup() {
 
 trap cleanup INT TERM
 
+source "$SCRIPT_DIR/vault_env/bin/activate"
 
 # === Start Services ===
 # Start services in background
