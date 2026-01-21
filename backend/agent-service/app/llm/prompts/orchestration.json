@@ -1,8 +1,40 @@
 {
     "rag_prompt": "Search bank policy documents, terms of service, and fee schedules.\n\nUse this tool when users ask about:\n- Bank fees (overdraft fees, wire transfer fees, ATM fees, etc.)\n- Terms of service questions\n- Account features, limitations, or policies\n- Fee schedules and charges\n- Account opening/closing procedures\n\nExamples:\n- \"What is the overdraft fee?\"\n- \"How much does an international wire transfer cost?\"\n- \"What are the terms for savings accounts?\"",
     
-    "spending_prompt": "Analyze user spending patterns and transactions.\n\nUse this tool when users ask about:\n- Spending by category (e.g., \"How much did I spend on coffee?\")\n- Spending by merchant\n- Monthly or time-based spending trends\n- Spending in specific accounts (checking vs savings)\n\nExamples:\n- \"What's my spending this month?\"\n- \"How much did I spend on groceries last month?\"\n- \"Show me my spending by category\"\n- \"What's my spending in my checking account?\"\n\nNote: Requires user_id. If not provided, ask the user.",
     
-    "balance_prompt": "Get account balance(s) for a user.\n\nUse this tool when users ask about:\n- Current account balance\n- Balance in specific account types (checking, savings)\n- Total balance across all accounts\n- \"How much money do I have?\"\n\nExamples:\n- \"What's my balance?\"\n- \"Show me my checking account balance\"\n- \"How much is in my savings account?\"\n- \"What's my total balance?\"\n\nNote: Requires user_id. If not provided, ask the user."
+    "spending_prompt": "Analyze user spending patterns and transactions.\n\nUse this tool when users ask about:\n- Spending by category (e.g., \"How much did I spend on coffee?\")\n- Spending by merchant\n- Monthly or time-based spending trends\n- Spending in specific accounts (checking vs savings)\n\nIMPORTANT: When users mention categories, map them to EXACT category names from this list:\n[\"ATM Withdrawal\", \"Bills & Utilities\", \"Coffee Shops\", \"Entertainment\", \"Food & Dining\", \"Gas & Fuel\", \"Groceries\", \"Healthcare\", \"Investment\", \"Online Services\", \"Restaurants\", \"Salary\", \"Shopping\", \"Transportation\", \"Travel\", \"Transfer\"]\n\nMapping examples:\n- \"coffee\" or \"coffee shops\" → \"Coffee Shops\"\n- \"food\" or \"dining\" → \"Food & Dining\"\n- \"groceries\" or \"grocery\" → \"Groceries\"\n- \"gas\" or \"fuel\" → \"Gas & Fuel\"\n- \"restaurant\" → \"Restaurants\"\n\nExamples:\n- \"What's my spending this month?\"\n- \"How much did I spend on groceries last month?\" → use category=\"Groceries\"\n- \"Show me my spending by category\"\n- \"What's my spending in my checking account?\"\n\nNote: Requires user_id. If not provided, ask the user.",
+    
+    "balance_prompt": "Get account balance(s) for a user.\n\nUse this tool when users ask about:\n- Current account balance\n- Balance in specific account types (checking, savings)\n- Total balance across all accounts\n- \"How much money do I have?\"\n\nExamples:\n- \"What's my balance?\"\n- \"Show me my checking account balance\"\n- \"How much is in my savings account?\"\n- \"What's my total balance?\"\n\nNote: Requires user_id. If not provided, ask the user.",
+
+    "categories": [
+      "ATM Withdrawal", "Bills & Utilities", "Coffee Shops", "Entertainment",
+      "Food & Dining", "Gas & Fuel", "Groceries", "Healthcare", "Investment",
+      "Online Services", "Restaurants", "Salary", "Shopping", "Transportation",
+      "Travel", "Transfer"
+    ],
+
+    "merchants": [
+      "Adobe", "Airbnb", "Amazon", "Amtrack", "ATM - Bank of America", "ATM - Chase", "ATM - Wells Fargo", "AWS",
+      "Best Buy", "Booking.com", "BP", "Burger King",
+      "Charles Schwab", "Chevron", "Concert Venue", "Costco", "CVS Pharmacy",
+      "Delta Airlines", "Dental Office", "Direct Deposit", "Dunkin'",
+      "eBay", "Electric Company", "Employer Payroll", "Exxon",
+      "Fidelity", 
+      "Google Cloud", 
+      "Hilton", "Hospital", "Home Depot",
+      "Internal Transfer", "Internet Provider",
+      "Kroger", 
+      "Local Coffee Shop", "Local Restaurant", "Lyft",
+      "Marriott", "McDonald's", "Metro Transit", "Microsoft", "Movie Theater",
+      "Netflix",
+      "Olive Garden", "Outback Steakhouse",
+      "PayPal", "Peet's Coffee", "Phone Company", "Pizza Hut",
+      "Red Lobster",
+      "Safeway", "Shell", "Spotify", "Starbucks", "Subway",
+      "Taco Bell", "Target",
+      "Uber",
+      "Vanguard", "Venmo",
+      "Walgreens", "Walmart", "Water Department", "Whole Foods",
+      "Zelle"
+    ]
   }
-  
