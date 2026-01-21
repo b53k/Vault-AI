@@ -144,9 +144,12 @@ class SpendingService:
                             row_dict['month'] = row_dict['month'].isoformat()
                         elif hasattr(row_dict['month'], 'strftime'):
                             row_dict['month'] = row_dict['month'].strftime('%Y-%m-%dT%H:%M:%S')
+                    
+                    if 'total_spending' in row_dict and row_dict['total_spending'] is not None:
+                        row_dict['total_spending'] = float(row_dict['total_spending'])
                     rows.append(row_dict)
         
-        total_spending = sum(float(row.get('total_spending', 0)) for row in rows)
+        total_spending = sum(row.get('total_spending', 0) for row in rows)
         total_transactions = sum(row.get('transaction_count', 0) for row in rows)
 
         # Format response
