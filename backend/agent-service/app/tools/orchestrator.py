@@ -18,6 +18,7 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 from app.tools.rag_tool import rag_tool
 from app.tools.sql_analytics_tool import sql_analytics_tool
 from app.tools.balance_query_tool import balance_tool
+from app.utils.category_normalizer import validate_category
 
 
 env_path = Path(__file__).parent.parent.parent.parent / '.env'
@@ -94,6 +95,12 @@ class Orchestrator:
             account_type: Optional[str] = None
         ) -> str:
 
+            # Normalize category before calling the tool
+            normalized_category = None
+            if category:
+                _, normalized_category = validate_category(category)
+
+
             start_dt = None
             end_dt = None
             if start_date:
@@ -109,7 +116,7 @@ class Orchestrator:
 
             result = await sql_analytics_tool.analyze_spending(
                 user_id = user_id,
-                category = category,
+                category = normalized_category,
                 start_date = start_dt,
                 end_date = end_dt,
                 group_by = group_by,
@@ -453,7 +460,7 @@ orchestrator = Orchestrator(model = 'gemini-2.5-flash-lite')
 if __name__ == "__main__":
     async def main():
         # Test with user_id 6 as mentioned in query
-        query = "What is the monthly maintenance fee? Also, how much did I spend on Coffee Shops?"
+        query = "What is the monthly maintenance fee? Also, how much did I spend on coffee on November 2025?"
         user_id = 6  # Match the user_id from the query
         async for event in orchestrator.process_query(query, user_id):
             print(event)
