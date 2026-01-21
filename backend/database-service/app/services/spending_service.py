@@ -2,6 +2,13 @@ from typing import Dict, Optional, Any
 from app.config.database import db_connection
 from datetime import datetime, timedelta
 
+import logging
+# Configure logging to show DEBUG messages
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
 # Database date constraints
 MAX_END_DATE = datetime(2026, 1, 13, 23, 59, 33, 593266)
 MIN_START_DATE = datetime(2025, 1, 13, 23, 59, 33, 593266)  # One year before MAX_END_DATE
@@ -35,16 +42,12 @@ class SpendingService:
 
         # Default date range: last 30 days
         if end_date is None:
-            end_date = datetime.now()
+            end_date = MIN_START_DATE
 
-        end_date = min(end_date, MAX_END_DATE)
-        end_date = max(end_date, MIN_START_DATE)
 
         if start_date is None:
             start_date = end_date - timedelta(days=30)
-        
-        start_date = max(start_date, MIN_START_DATE)
-        start_date = min(start_date, end_date)
+            
 
         # Ensure start date is not more than one year before end date
         min_valid_start = end_date - timedelta(days=365)
@@ -125,6 +128,10 @@ class SpendingService:
             ORDER BY total_spending DESC
             LIMIT 50
         """
+
+        logger = logging.getLogger(__name__)
+        logger.info(f"SQL Query: {query}")
+        logger.info(f"Params: {params}")
 
         # ----------------------------------------------------
 
