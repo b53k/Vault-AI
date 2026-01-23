@@ -50,7 +50,7 @@ The platform follows a microservices architecture with the following services:
 
 
 ## Project Structure
-
+```text
 Vault/
 ├── backend/
 │   ├── agent-service/          # AI agent orchestration
@@ -75,3 +75,4 @@ Vault/
 ├── api-gateway/                # API gateway (future)
 ├── frontend/                   # Frontend (future)
 └── infrastructure/             # Docker and deployment configs
+```
