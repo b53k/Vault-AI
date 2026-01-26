@@ -232,6 +232,9 @@ class Orchestrator:
         if not last_message or not hasattr(last_message, 'tool_calls') or not last_message.tool_calls:
             return {"messages": []}
 
+        # Store tool metadate for frontend display
+        tool_metadata = []
+
         # Helper function to execute a single tool call
         async def execute_single_tool(tool_call):
             tool_name = tool_call.get("name")
@@ -265,6 +268,25 @@ class Orchestrator:
                 )
 
             try:
+                # Capture metadata based on tool type
+                metadata = {"tool_name": tool_name, "tool_args": tool_args}
+
+                if tool_name == "analyze_spending":
+                    # NOTE: Need to modify spending_service.py to return actual SQL query
+                    # For now, just capture the parameters
+                    metadata["sql_params"] = tool_args
+
+                if tool_name == "search_policy_documents":
+                    from app.tools.rag_tool import rag_tool
+                    rag_results = await rag_tool.search_policy_documents(tool_args.get("query", ""))
+                    metadata["rag_results"] = rag_results.get("results", [])[:3]    # Top 3
+
+                if tool_name == "get_account_balances":
+                    from app.tools.balance_tool import balance_tool
+                    balance_results = await balance_tool.get_account_balances(tool_args.get("user_id", None))
+                    metadata["balance_results"] = balance_results
+
+
                 # Call the underlying async function directly
                 # StructuredTool wraps async functions, so we need to await the function itself
                 if asyncio.iscoroutinefunction(tool.func):
@@ -272,6 +294,9 @@ class Orchestrator:
                 else:
                     # For sync functions, use invoke
                     result = tool.invoke(tool_args)
+
+                # Store metadata
+                tool_metadata.append(metadata)
                 
                 return ToolMessage(
                     content=str(result),
@@ -296,7 +321,10 @@ class Orchestrator:
             for tool_call in last_message.tool_calls
         ])
         
-        return {"messages": list(tool_messages)}
+        # Store metadata in state for later retrieval
+        state["tool_metadata"] = tool_metadata
+
+        return {"messages": list(tool_messages), "tool_metadata": tool_metadata}
                 
 
 
@@ -429,10 +457,13 @@ class Orchestrator:
                             }
                 
                 elif node_name == "tools":
-                    # Tools are executing
+                    # Tools are executing - include metadata
+                    tool_metadata = node_output.get("tool_metadata", [])
+                    
                     yield {
                         "type": "tool_execution",
                         "status": "executing"
+                        "metadata": tool_metadata  # Include SQL queries, RAG results etc.
                     }
 
                 elif node_name == "respond":
