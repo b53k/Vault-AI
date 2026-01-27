@@ -278,12 +278,16 @@ class Orchestrator:
 
                 if tool_name == "search_policy_documents":
                     from app.tools.rag_tool import rag_tool
-                    rag_results = await rag_tool.search_policy_documents(tool_args.get("query", ""))
+                    rag_results = await rag_tool.search_policy(tool_args.get("query", ""))
                     metadata["rag_results"] = rag_results.get("results", [])[:3]    # Top 3
 
                 if tool_name == "get_account_balances":
-                    from app.tools.balance_tool import balance_tool
-                    balance_results = await balance_tool.get_account_balances(tool_args.get("user_id", None))
+                    from app.tools.balance_query_tool import balance_tool
+                    balance_results = await balance_tool.get_balance(
+                        user_id = tool_args.get("user_id", None),
+                        account_id = tool_args.get("account_id", None),
+                        account_type = tool_args.get("account_type", None)
+                    )
                     metadata["balance_results"] = balance_results
 
 
