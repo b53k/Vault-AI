@@ -67,12 +67,12 @@ class AdminService:
                 params = []
 
                 if search:
-                    base_query += "WHERE name ILIKE %s OR email ILIKE %s"
-                    count_query += "WHERE name ILIKE %s OR email ILIKE %s"
+                    base_query += " WHERE name ILIKE %s OR email ILIKE %s"
+                    count_query += " WHERE name ILIKE %s OR email ILIKE %s"
                     search_term = f"%{search}%"
                     params = [search_term, search_term]
 
-                base_query += "ORDER BY user_id DESC LIMIT %s OFFSET %s"
+                base_query += " ORDER BY user_id DESC LIMIT %s OFFSET %s"
                 params.extend([page_size, offset])
 
                 # Get total count
