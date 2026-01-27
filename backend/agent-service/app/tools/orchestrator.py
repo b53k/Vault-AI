@@ -462,7 +462,7 @@ class Orchestrator:
                     
                     yield {
                         "type": "tool_execution",
-                        "status": "executing"
+                        "status": "executing",
                         "metadata": tool_metadata  # Include SQL queries, RAG results etc.
                     }
 
