@@ -29,7 +29,7 @@ class AdminService:
 
                 # calculate total balance
                 cur.execute("SELECT SUM(balance) FROM accounts")
-                total_balance = cur.fetchone()[0]
+                total_balance_result = cur.fetchone()[0]
                 total_balance = float(total_balance_result) if total_balance_result else 0.0
 
                 return {
