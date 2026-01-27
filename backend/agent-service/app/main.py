@@ -8,7 +8,7 @@ from app.api.routes.chat import router as chat_router
 
 # FastAPI app instance
 app = FastAPI(
-    title = "Agent Service".
+    title = "Agent Service",
     description = "AI Agent Orchestration service for Vault-AI",
     version = "1.0.0"
 )
