@@ -232,6 +232,14 @@ class Orchestrator:
         if not last_message or not hasattr(last_message, 'tool_calls') or not last_message.tool_calls:
             return {"messages": []}
 
+        
+        # DEBUG: Log tool calls
+        print("\n" + "="*80)
+        print("EXECUTE TOOLS - TOOL CALLS:")
+        for tc in last_message.tool_calls:
+            print(f"  - {tc.get('name')}: {tc.get('args', {})}")
+        print("="*80)
+
         # Store tool metadate for frontend display
         tool_metadata = []
 
@@ -360,6 +368,18 @@ class Orchestrator:
         # Get LLM response with potential tool calls
         response = await self.llm_with_tools.ainvoke(messages)
 
+        # DEBUG: Log LLM response
+        print("\n" + "="*80)
+        print("ORCHESTRATOR - LLM RESPONSE:")
+        print(f"  Content: {response.content[:500] if hasattr(response, 'content') and response.content else 'None'}")
+        if hasattr(response, 'tool_calls') and response.tool_calls:
+            print(f"  Tool Calls: {len(response.tool_calls)}")
+            for tc in response.tool_calls:
+                print(f"    - {tc.get('name')}: {tc.get('args', {})}")
+        else:
+            print("  No tool calls")
+        print("="*80 + "\n")
+
         return {
             "messages": [response],
             "tool_results": {}
@@ -385,6 +405,22 @@ class Orchestrator:
 
         messages = state.get("messages", [])
 
+        # DEBUG: Log all messages before formatting
+        # print("\n" + "="*80)
+        # print("📝 _format_response - ALL MESSAGES IN STATE:")
+        # for i, msg in enumerate(messages):
+        #     msg_type = type(msg).__name__
+        #     if isinstance(msg, ToolMessage):
+        #         content_preview = str(msg.content)[:200]
+        #         print(f"  [{i}] {msg_type}: {content_preview}...")
+        #     elif hasattr(msg, 'content'):
+        #         print(f"  [{i}] {msg_type}: {msg.content[:200]}")
+        #     elif hasattr(msg, 'tool_calls'):
+        #         print(f"  [{i}] {msg_type}: tool_calls={len(msg.tool_calls) if msg.tool_calls else 0}")
+        #     else:
+        #         print(f"  [{i}] {msg_type}: {str(msg)[:200]}")
+        # print("="*80)
+
         # Get the last AI message
         tool_calls = []
         for msg in reversed(messages):
@@ -392,20 +428,43 @@ class Orchestrator:
                 tool_calls = msg.tool_calls
                 break
 
-        # If there were tool calls, fetch the results and ask LLM to format response
+        # If there were tool calls, format response using all messages (which already include ToolMessages)
         if tool_calls:
-            tool_results = []
-            for msg in messages:
-                if isinstance(msg, ToolMessage):
-                    tool_results.append(msg)
+            # Messages already contain the ToolMessages from _execute_tools
+            # Add a system message to instruct the LLM to format a natural language response
+            format_prompt = SystemMessage(
+                content="Based on the tool results provided, format a clear and concise natural language response to the user's question. Do not make additional tool calls."
+            )
             
-            response_messages = messages + tool_results
+            # Construct the conversation: original messages + format instruction
+            response_messages = messages + [format_prompt]
 
+
+            follow_up = HumanMessage(
+                content="Please provide a clear answer to my question based on the tool results above."
+            )
+            response_messages = messages + [follow_up]
+            
             final_response = await self.llm.ainvoke(response_messages)
+            
+            # DEBUG: Log final LLM response
+            print("\n" + "="*80)
+            print("✅ FORMAT RESPONSE - FINAL LLM RESPONSE:")
+            print(f"  Content: {final_response.content if hasattr(final_response, 'content') else 'None'}")
+            print(f"  Content length: {len(final_response.content) if hasattr(final_response, 'content') and final_response.content else 0}")
+            if hasattr(final_response, 'tool_calls') and final_response.tool_calls:
+                print(f"  WARNING: Response has tool_calls: {final_response.tool_calls}")
+            print("="*80 + "\n")
+        else:
+            # No tool calls, just return the last message
+            final_response = messages[-1] if messages else None
+            print("\n" + "="*80)
+            print("⚠️  _format_response - NO TOOL CALLS, RETURNING LAST MESSAGE")
+            print("="*80 + "\n")
 
-            return {
-                "messages": [final_response],
-            }
+        return {
+            "messages": [final_response] if final_response else [],
+        }
 
     
     async def process_query(
@@ -495,7 +554,8 @@ orchestrator = Orchestrator(model = 'gemini-2.5-flash-lite')
 if __name__ == "__main__":
     async def main():
         # Test with user_id 6 as mentioned in query
-        query = "What is the monthly maintenance fee? Also, how much did I spend on coffee on November 2025?"
+        query = "How much did I spend on coffee on November 2025?"
+        #query = "What is the monthly maintenance fee? Also, how much did I spend on coffee on November 2025?"
         user_id = 6  # Match the user_id from the query
         async for event in orchestrator.process_query(query, user_id):
             print(event)
