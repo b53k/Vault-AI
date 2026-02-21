@@ -56,7 +56,7 @@ DATABASE_PID=$!
 sleep 5
 echo ""
 echo "Services started:"
-echo "Agent service - http://localhost:8000" | lolcat
+echo "Agent service       - http://localhost:8000" | lolcat
 echo "Vectorstore service - http://localhost:8001" | lolcat
 echo "Database service    - http://localhost:8002" | lolcat
 echo ""
